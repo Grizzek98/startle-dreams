@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createPost } from "./firebase";
 
-export default function Editor({ user }) {
+export default function Editor({ user, showToast }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [status, setStatus] = useState("");
@@ -9,6 +9,11 @@ export default function Editor({ user }) {
   async function submit(e) {
     e.preventDefault();
     setStatus("posting…");
+    if (!title.trim() || !body.trim()) {
+      showToast("Title and body cannot be empty.");
+      setStatus("");
+      return;
+    }
     try {
       await createPost(title, body, user.uid);
       setTitle("");
@@ -16,28 +21,30 @@ export default function Editor({ user }) {
       setStatus("posted!");
       setTimeout(() => setStatus(""), 1500);
     } catch (err) {
-      setStatus("error: " + err.message);
+      showToast("Error: " + err.message);
     }
   }
 
   return (
-    <form onSubmit={submit} style={{ margin: "1rem 0" }}>
-      <h3>New post</h3>
+    <form className="Editor-form" onSubmit={submit}>
+      <h3 className="Editor-title">New post</h3>
       <input
-        placeholder="title"
+        className="Editor-input"
+        placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        style={{ width: "100%" }}
       />
       <textarea
-        placeholder="write content..."
+        className="Editor-textarea"
+        placeholder="I dreamt..."
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        style={{ width: "100%", minHeight: 120 }}
       />
-      <div>
-        <button type="submit">publish</button>
-        <span style={{ marginLeft: 12 }}>{status}</span>
+      <div className="Editor-actions">
+        <button className="Editor-publish-btn" type="submit">
+          Publish
+        </button>
+        <span className="Editor-status">{status}</span>
       </div>
     </form>
   );

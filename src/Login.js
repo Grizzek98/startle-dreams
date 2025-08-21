@@ -17,25 +17,29 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={handle} style={{ marginBottom: 20 }}>
-      <h3>Admin login</h3>
-      <div>
+    <form className="Login-form" onSubmit={handle}>
+      <h3 className="Login-title">Admin login</h3>
+      <div className="Login-field">
         <input
+          className="Login-input"
           placeholder="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div>
+      <div className="Login-field">
         <input
+          className="Login-input"
           placeholder="password"
           value={pw}
           onChange={(e) => setPw(e.target.value)}
           type="password"
         />
       </div>
-      <button type="submit">login</button>
-      {err && <p style={{ color: "red" }}>{err}</p>}
+      <button className="Login-btn" type="submit">
+        login
+      </button>
+      {err && <p className="Login-error">{err}</p>}
     </form>
   );
 }

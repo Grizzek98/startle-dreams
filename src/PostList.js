@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { postsQuery } from "./firebase";
 import { onSnapshot } from "firebase/firestore";
+import Post from "./Post";
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -14,22 +15,11 @@ export default function Posts() {
   }, []);
 
   return (
-    <section>
-      <h2>Posts</h2>
-      {posts.length === 0 && <p>no posts yet</p>}
+    <section className="PostList-section">
+      <h2 className="PostList-title">Posts</h2>
+      {posts.length === 0 && <p className="PostList-empty">no posts yet</p>}
       {posts.map((p) => (
-        <article
-          key={p.id}
-          style={{
-            border: "1px solid #eee",
-            padding: 12,
-            marginBottom: 12,
-            borderRadius: 6,
-          }}
-        >
-          <h3>{p.title}</h3>
-          <p style={{ whiteSpace: "pre-wrap" }}>{p.body}</p>
-        </article>
+        <Post key={p.id} post={p} />
       ))}
     </section>
   );
