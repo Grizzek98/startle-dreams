@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/startle-dreams/static/css/main.f855e6bc.css",
+    "main.js": "/startle-dreams/static/js/main.1c263cf1.js",
+    "index.html": "/startle-dreams/index.html",
+    "main.f855e6bc.css.map": "/startle-dreams/static/css/main.f855e6bc.css.map",
+    "main.1c263cf1.js.map": "/startle-dreams/static/js/main.1c263cf1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.1c263cf1.js"
+  ]
+}
