@@ -10,6 +10,7 @@ import Toast from "./Toast";
 function App() {
   const [user, setUser] = useState(null);
   const [toast, setToast] = useState("");
+  const [showLogin, setShowLogin] = useState(false);
 
   function showToast(msg) {
     setToast(msg);
@@ -18,6 +19,11 @@ function App() {
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => setUser(u));
   }, []);
+
+  // Close login modal when user logs in or logs out
+  useEffect(() => {
+    setShowLogin(false);
+  }, [user]);
 
   return (
     <div className="App-container">
@@ -33,13 +39,29 @@ function App() {
               </button>
             </>
           ) : (
-            <span>not logged in</span>
+            <button
+              className="App-login-btn"
+              onClick={() => setShowLogin(true)}
+            >
+              Login
+            </button>
           )}
         </div>
       </header>
-      {user ? <Editor user={user} showToast={showToast} /> : <Login />}
+      {/* Modal for login */}
+      {showLogin && !user && (
+        <div className="Modal-overlay" onClick={() => setShowLogin(false)}>
+          <div className="Modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="Modal-close" onClick={() => setShowLogin(false)}>
+              &times;
+            </button>
+            <Login />
+          </div>
+        </div>
+      )}
+      {user ? <Editor user={user} showToast={showToast} /> : null}
       <hr className="App-divider" />
-      <PostList />
+      <PostList user={user} />
     </div>
   );
 }

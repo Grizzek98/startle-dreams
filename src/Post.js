@@ -5,7 +5,7 @@ import { Timestamp } from "firebase/firestore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Post({ post }) {
+export default function Post({ post, user }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(post.title);
   const [body, setBody] = useState(post.body);
@@ -87,12 +87,16 @@ export default function Post({ post }) {
         <>
           <h3 className="Post-title">{post.title}</h3>
           <p className="Post-body">{post.body}</p>
-          <button className="Post-edit-btn" onClick={() => setEditing(true)}>
-            Edit
-          </button>
-          <button className="Post-delete-btn" onClick={handleDelete}>
-            Delete
-          </button>
+          {user && (
+            <button className="Post-edit-btn" onClick={() => setEditing(true)}>
+              Edit
+            </button>
+          )}
+          {user && (
+            <button className="Post-delete-btn" onClick={handleDelete}>
+              Delete
+            </button>
+          )}
           {error && <div className="Post-error">{error}</div>}
         </>
       )}
