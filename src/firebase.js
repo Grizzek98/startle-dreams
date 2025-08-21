@@ -31,12 +31,12 @@ export const logOut = () => signOut(auth);
 
 export const postsCollection = () => collection(db, "posts");
 
-export const createPost = (title, body, uid) =>
+export const createPost = (title, body, uid, postDate) =>
   addDoc(postsCollection(), {
     title,
     body,
     authorUid: uid,
-    createdAt: serverTimestamp(),
+    postDate: postDate,
   });
 export const postsQuery = () =>
-  query(postsCollection(), orderBy("createdAt", "desc"));
+  query(postsCollection(), orderBy("postDate", "desc"));

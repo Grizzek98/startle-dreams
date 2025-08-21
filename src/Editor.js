@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { createPost } from "./firebase";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Timestamp } from "firebase/firestore";
 
 export default function Editor({ user, showToast }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [status, setStatus] = useState("");
+  const [postDate, setPostDate] = useState(new Date());
 
   async function submit(e) {
     e.preventDefault();
@@ -15,13 +19,15 @@ export default function Editor({ user, showToast }) {
       return;
     }
     try {
-      await createPost(title, body, user.uid);
+      await createPost(title, body, user.uid, Timestamp.fromDate(postDate));
       setTitle("");
       setBody("");
+      setPostDate(new Date());
       setStatus("posted!");
       setTimeout(() => setStatus(""), 1500);
     } catch (err) {
       showToast("Error: " + err.message);
+      if (showToast) showToast("Error: " + err.message);
     }
   }
 
@@ -40,6 +46,15 @@ export default function Editor({ user, showToast }) {
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ marginRight: 8 }}>Date:</label>
+        <DatePicker
+          selected={postDate}
+          onChange={(date) => setPostDate(date)}
+          dateFormat="yyyy-MM-dd"
+          className="Editor-input"
+        />
+      </div>
       <div className="Editor-actions">
         <button className="Editor-publish-btn" type="submit">
           Publish
