@@ -3,7 +3,7 @@ import { updatePost, deletePost } from "./firebase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function formatDate(ts) {
+export function formatDate(ts) {
   const d = ts?.toDate?.();
   if (!d) return "";
   return d.toLocaleDateString(undefined, {
@@ -54,7 +54,7 @@ export default function Post({ post, user }) {
 
   if (editing) {
     return (
-      <article className="card post">
+      <article className="card post" id={`post-${post.id}`}>
         <form onSubmit={handleEdit}>
           <textarea
             aria-label="Dream"
@@ -93,7 +93,7 @@ export default function Post({ post, user }) {
   }
 
   return (
-    <article className="card post">
+    <article className="card post" id={`post-${post.id}`}>
       <time className="post-date">{formatDate(post.postDate)}</time>
       <p className="post-body">{post.body}</p>
       {user && (

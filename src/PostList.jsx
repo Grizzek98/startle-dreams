@@ -1,21 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { onSnapshot } from "firebase/firestore";
-import { postsQuery } from "./firebase";
+import { useMemo, useState } from "react";
 import Post from "./Post";
 
-export default function PostList({ user }) {
-  const [posts, setPosts] = useState(null);
-  const [error, setError] = useState("");
+export default function PostList({ user, posts, error }) {
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const unsub = onSnapshot(
-      postsQuery(),
-      (snap) => setPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-      (err) => setError(err.message)
-    );
-    return unsub;
-  }, []);
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase();

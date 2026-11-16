@@ -1,0 +1,129 @@
+/* Night sky view. Always night, in both app themes. Scoped under .ns. */
+.ns {
+  --sky-text: #c9d4f2;
+  --sky-muted: #6f7ea8;
+  --star: #eef3ff;
+  --line: #8fb0ff;
+  --move: 0.9s cubic-bezier(0.45, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 0%, #132654, #070d22 65%, #050a1c);
+  color: var(--sky-text);
+}
+.ns-scroll { position: absolute; inset: 0; overflow: hidden; scrollbar-width: none; }
+.ns-scroll::-webkit-scrollbar { display: none; }
+.ns.timeline .ns-scroll { overflow-x: auto; cursor: grab; touch-action: pan-x; }
+.ns.timeline .ns-scroll.dragging { cursor: grabbing; }
+.ns-scroll:focus-visible { outline: 2px solid var(--line); outline-offset: -4px; }
+.ns-sky { display: block; height: 100%; }
+
+/* Constellations */
+.ns .con { transition: transform var(--move); }
+.ns .no-anim .con, .ns .no-anim .ns-deco { transition: none !important; }
+.ns .star { fill: var(--star); }
+.ns .glow { pointer-events: none; }
+.ns .hit { fill: transparent; cursor: pointer; }
+.ns .cline { stroke: var(--line); stroke-opacity: 0.13; stroke-width: 1; transition: stroke-opacity 0.15s; }
+.ns .con.lit .cline { stroke-opacity: 0.6; }
+.ns .con.lit .star { fill: #fff; }
+
+/* Timeline decorations */
+.ns-deco { opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+.ns.timeline .ns-deco { opacity: 1; transition: opacity 0.5s 0.55s; }
+.ns .fold-line { stroke: #2a3a6e; stroke-dasharray: 2 6; }
+.ns .fold-text { fill: #5d6b96; font-size: 11px; font-style: italic; }
+.ns .tick { fill: var(--sky-muted); font-size: 11px; }
+.ns .tick.year { fill: var(--sky-text); font-weight: 600; font-size: 12px; }
+.ns .tick-mark { stroke: #2a3a6e; }
+.ns-hill { transition: opacity 0.5s; }
+.ns:not(.timeline) .ns-hill { opacity: 0; }
+
+/* Scene (sky view only) */
+.ns-scene { position: absolute; left: 0; right: 0; bottom: 0; height: 200px; pointer-events: none; transition: opacity 0.5s; }
+.ns-scene svg { display: block; width: 100%; height: 100%; }
+.ns.timeline .ns-scene { opacity: 0; }
+.ns .silhouette { fill: #040817; }
+.ns .window { fill: #ffc070; }
+.ns .puff { fill: #7d89ad; opacity: 0; transform-box: fill-box; transform-origin: center; }
+
+/* Dusk */
+.ns-twilight {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(to bottom, #284a8c 0%, #3f5f9e 50%, #7d83a6 82%, #b99a8e 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ns .twinkle { animation: ns-twinkle 4s ease-in-out infinite; }
+  .ns .puff { animation: ns-smoke 7.5s linear infinite; }
+  .ns .flame { animation: ns-flicker 1.9s ease-in-out infinite; }
+  .ns .flame-glow { animation: ns-flicker 2.7s ease-in-out infinite; }
+  .ns.dusk .ns-twilight { animation: ns-dusk 6.5s cubic-bezier(0.3, 0, 0.6, 1) both; }
+  .ns.dusk .sw, .ns.dusk .lines { animation: ns-appear 1.8s ease-out both; animation-delay: var(--d); }
+  .ns.dusk .light-on { animation: ns-appear 1.4s ease-out 2.8s both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ns .puff { opacity: 0.14; }
+  .ns .con, .ns-deco, .ns-scene, .ns-overview { transition: none !important; }
+}
+@keyframes ns-twinkle { 50% { opacity: 0.45; } }
+@keyframes ns-smoke {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  12% { opacity: 0.3; }
+  100% { opacity: 0; transform: translate(20px, -84px) scale(2.8); }
+}
+@keyframes ns-flicker {
+  0% { opacity: 0.82; } 12% { opacity: 1; } 23% { opacity: 0.68; } 35% { opacity: 0.95; } 48% { opacity: 0.76; }
+  60% { opacity: 1; } 72% { opacity: 0.72; } 86% { opacity: 0.93; } 100% { opacity: 0.82; }
+}
+@keyframes ns-dusk { from { opacity: 0.95; } to { opacity: 0; } }
+@keyframes ns-appear { from { opacity: 0; } to { opacity: 1; } }
+
+/* Overlays */
+.ns-overlay { position: absolute; }
+.ns-title { top: 14px; left: 20px; pointer-events: none; }
+.ns-caption { margin: 0; font-size: 0.82rem; color: var(--sky-muted); }
+.ns-key { top: 14px; right: 20px; text-align: right; font-size: 0.78rem; line-height: 1.7; color: var(--sky-muted); pointer-events: none; }
+.ns-key b { color: var(--sky-text); font-weight: 600; }
+.ns-actions { right: 20px; bottom: 18px; display: flex; gap: 8px; align-items: center; }
+.ns.timeline .ns-actions { bottom: 64px; }
+.ns-btn {
+  font: inherit; cursor: pointer;
+  border: 1px solid #2c3d73; background: rgb(15 24 52 / 0.85); color: #e4ebfb;
+  border-radius: 999px; padding: 8px 16px; font-size: 0.85rem; font-weight: 500;
+  backdrop-filter: blur(4px); transition: background-color 0.15s, border-color 0.15s;
+}
+.ns-btn:hover { background: #1a2853; border-color: #7ea6ff; }
+.ns-btn:focus-visible { outline: 2px solid #7ea6ff; outline-offset: 2px; }
+.ns-btn.icon { width: 36px; height: 36px; padding: 0; font-size: 1.1rem; line-height: 1; }
+.ns-btn[hidden] { display: none; }
+.ns-zoom { display: none; gap: 4px; }
+.ns.timeline .ns-zoom { display: flex; }
+.ns-empty { inset: 0; display: grid; place-items: center; text-align: center; pointer-events: none; }
+.ns-empty[hidden] { display: none; }
+.ns-empty h3 { margin: 0 0 4px; font-size: 1.2rem; color: #eef3ff; }
+.ns-empty p { margin: 0; color: var(--sky-muted); }
+
+.ns-overview {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 46px;
+  background: #050a1c; border-top: 1px solid #1a2650; cursor: pointer; touch-action: none;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.ns.timeline .ns-overview { opacity: 1; pointer-events: auto; transition: opacity 0.5s 0.55s; }
+.ns-ov { display: block; width: 100%; height: 46px; }
+.ns .ov-window { fill: #7ea6ff; fill-opacity: 0.1; stroke: #7ea6ff; stroke-opacity: 0.55; }
+
+.ns-tip {
+  position: fixed; z-index: 100; pointer-events: none;
+  background: #eef3ff; color: #08102a; font-size: 0.8rem; line-height: 1.4;
+  padding: 7px 11px; border-radius: 8px; white-space: nowrap;
+  opacity: 0; transform: translate(-50%, -100%) translateY(-10px); transition: opacity 0.12s;
+}
+.ns-tip.on { opacity: 1; }
+.ns-tip b { font-weight: 600; }
+.ns-tip .m { color: #4a5578; }
+
+@media (max-width: 600px) {
+  .ns-key { display: none; }
+}
