@@ -72,7 +72,11 @@ function App() {
   useEffect(() => {
     if (view !== "journal" || !posts) return;
     const m = window.location.hash.match(/^#post-(.+)$/);
-    if (m) document.getElementById(`post-${m[1]}`)?.scrollIntoView({ block: "center" });
+    const el = m && document.getElementById(`post-${m[1]}`);
+    if (!el) return;
+    document.querySelectorAll(".post.is-target").forEach((n) => n.classList.remove("is-target"));
+    el.classList.add("is-target");
+    el.scrollIntoView({ block: "center" });
   }, [view, posts]);
 
   const dark = theme === "dark";

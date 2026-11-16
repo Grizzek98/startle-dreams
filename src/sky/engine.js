@@ -207,27 +207,42 @@ export function createSky(root, { onSelect } = {}) {
     if (!M.dreams.length) { deco.innerHTML = ""; return; }
     const { X, ppd, padL, W, top } = L, horizon = L.horizonT, today = dayNum(new Date());
     let out = "";
+    // fold labels: alternate between two rows when neighbours would touch
+    const rowEnd = [-1e9, -1e9];
     M.folds.forEach(f => {
-      const x = X(f.t);
-      out += `<line class="fold-line" x1="${x}" x2="${x}" y1="${top - 20}" y2="${horizon}"></line><text class="fold-text" x="${x}" y="${top - 28}" text-anchor="middle">${humanSpan(f.days)} quiet</text>`;
+      const x = X(f.t), text = `${humanSpan(f.days)} quiet`, half = text.length * 3.1;
+      const row = x - half > rowEnd[0] + 8 ? 0 : x - half > rowEnd[1] + 8 ? 1 : -1;
+      out += `<line class="fold-line" x1="${x}" x2="${x}" y1="${top - 20}" y2="${horizon}"></line>`;
+      if (row < 0) return;
+      rowEnd[row] = x + half;
+      out += `<text class="fold-text" x="${x}" y="${top - 34 + row * 14}" text-anchor="middle">${text}</text>`;
     });
     const first = M.dreams[0], last = M.dreams[M.dreams.length - 1], spans = [];
     spans.push({ n0: first.n - Math.floor(padL / ppd), t0: first.t - Math.floor(padL / ppd), n1: first.n });
     M.dreams.forEach((x, i) => { if (i) { const p = M.dreams[i - 1]; if (x.t - p.t === x.n - p.n) spans.push({ n0: p.n, t0: p.t, n1: x.n }); } });
     spans.push({ n0: last.n, t0: last.t, n1: last.n + Math.ceil((W - X(last.t)) / ppd) });
-    let lastTickX = -1e9; const yearsLabeled = new Set();
+    // Collect candidate labels, then place them without overlap: years first, then months.
+    const labels = [], yearsLabeled = new Set();
     spans.forEach(s => {
       for (let n = s.n0; n <= s.n1; n++) {
         if (n > today) break;
         const d = fromDayNum(n); if (d.getDate() !== 1) continue;
-        const x = X(s.t0 + n - s.n0), isYear = d.getMonth() === 0;
-        if (!isYear && (ppd < 3 || x - lastTickX < 44)) continue;
+        const isYear = d.getMonth() === 0;
+        if (!isYear && ppd < 3) continue;
         if (isYear) yearsLabeled.add(d.getFullYear());
-        out += `<line class="tick-mark" x1="${x}" x2="${x}" y1="${horizon + 10}" y2="${horizon + 16}"></line><text class="tick${isYear ? " year" : ""}" x="${x + 4}" y="${horizon + 30}">${isYear ? d.getFullYear() : MONTHS[d.getMonth()]}</text>`;
-        lastTickX = x;
+        labels.push({ x: X(s.t0 + n - s.n0), year: isYear, text: isYear ? String(d.getFullYear()) : MONTHS[d.getMonth()] });
       }
     });
-    M.dreams.forEach(x => { const y = x.d.getFullYear(); if (!yearsLabeled.has(y)) { yearsLabeled.add(y); out += `<text class="tick year" x="${X(x.t)}" y="${horizon + 30}">${y}</text>`; } });
+    // a year whose Jan 1 was folded away is labeled at its first dream
+    M.dreams.forEach(x => { const y = x.d.getFullYear(); if (!yearsLabeled.has(y)) { yearsLabeled.add(y); labels.push({ x: X(x.t), year: true, text: String(y) }); } });
+    const placed = [];
+    const width = l => l.text.length * 7.5 + 4;
+    labels.sort((a, b) => (b.year - a.year) || (a.x - b.x)).forEach(l => {
+      const x0 = l.x, x1 = l.x + 4 + width(l);
+      if (placed.some(p => x0 < p.x1 + 10 && p.x0 < x1 + 10)) return;
+      placed.push({ x0, x1 });
+      out += `<line class="tick-mark" x1="${l.x}" x2="${l.x}" y1="${horizon + 10}" y2="${horizon + 16}"></line><text class="tick${l.year ? " year" : ""}" x="${l.x + 4}" y="${horizon + 30}">${l.text}</text>`;
+    });
     deco.innerHTML = out;
   }
 
