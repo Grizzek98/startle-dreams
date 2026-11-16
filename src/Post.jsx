@@ -94,9 +94,7 @@ export default function Post({ post, user }) {
 
   return (
     <article className="card post">
-      <h3 className="post-date">
-        <time>{formatDate(post.postDate)}</time>
-      </h3>
+      <time className="post-date">{formatDate(post.postDate)}</time>
       <p className="post-body">{post.body}</p>
       {user && (
         <div className="post-actions">
