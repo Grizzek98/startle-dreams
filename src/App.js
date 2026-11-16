@@ -11,6 +11,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [toast, setToast] = useState("");
   const [showLogin, setShowLogin] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   function showToast(msg) {
     setToast(msg);
@@ -25,26 +26,30 @@ function App() {
     setShowLogin(false);
   }, [user]);
 
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", darkMode);
+    return () => document.body.classList.remove("dark-mode");
+  }, [darkMode]);
+
   return (
-    <div className="App-container">
+    <div>
       <Toast message={toast} onClose={() => setToast("")} />
-      <header className="App-header-bar">
-        <h1 className="App-title">Startle Dreams</h1>
-        <div className="App-user-bar">
+      <header>
+        <h1>Startle Dreams</h1>
+        <div>
+          <button
+            onClick={() => setDarkMode((d) => !d)}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
           {user ? (
             <>
-              <span className="App-user-email">hi, {user.email}</span>
-              <button className="App-logout-btn" onClick={() => logOut()}>
-                logout
-              </button>
+              <span>hi, {user.email}</span>
+              <button onClick={() => logOut()}>logout</button>
             </>
           ) : (
-            <button
-              className="App-login-btn"
-              onClick={() => setShowLogin(true)}
-            >
-              Login
-            </button>
+            <button onClick={() => setShowLogin(true)}>Login</button>
           )}
         </div>
       </header>
@@ -60,7 +65,7 @@ function App() {
         </div>
       )}
       {user ? <Editor user={user} showToast={showToast} /> : null}
-      <hr className="App-divider" />
+      <hr />
       <PostList user={user} />
     </div>
   );

@@ -15,9 +15,9 @@ export default function PostList({ user }) {
   }, []);
 
   return (
-    <section className="PostList-section">
-      <h2 className="PostList-title">Posts</h2>
-      {posts.length === 0 && <p className="PostList-empty">no posts yet</p>}
+    <section>
+      <h2>Posts</h2>
+      {posts.length === 0 && <p>no posts yet</p>}
       {posts.map((p) => (
         <Post key={p.id} post={p} user={user} />
       ))}

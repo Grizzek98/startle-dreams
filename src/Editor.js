@@ -32,16 +32,14 @@ export default function Editor({ user, showToast }) {
   }
 
   return (
-    <form className="Editor-form" onSubmit={submit}>
-      <h3 className="Editor-title">New post</h3>
+    <form onSubmit={submit}>
+      <h3>New post</h3>
       <input
-        className="Editor-input"
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
       <textarea
-        className="Editor-textarea"
         placeholder="I dreamt..."
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -52,14 +50,11 @@ export default function Editor({ user, showToast }) {
           selected={postDate}
           onChange={(date) => setPostDate(date)}
           dateFormat="yyyy-MM-dd"
-          className="Editor-input"
         />
       </div>
-      <div className="Editor-actions">
-        <button className="Editor-publish-btn" type="submit">
-          Publish
-        </button>
-        <span className="Editor-status">{status}</span>
+      <div>
+        <button type="submit">Publish</button>
+        <span>{status}</span>
       </div>
     </form>
   );

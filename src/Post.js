@@ -45,59 +45,34 @@ export default function Post({ post, user }) {
   }
 
   return (
-    <article className="Post-article">
+    <article>
       {editing ? (
-        <form className="Post-edit-form" onSubmit={handleEdit}>
-          <input
-            className="Post-edit-title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            className="Post-edit-body"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          />
+        <form onSubmit={handleEdit}>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} />
           <div style={{ marginBottom: 12 }}>
             <label style={{ marginRight: 8 }}>Date:</label>
             <DatePicker
               selected={postDate}
               onChange={(date) => setPostDate(date)}
               dateFormat="yyyy-MM-dd"
-              className="Post-edit-title"
             />
           </div>
-          <button
-            className="Post-save-btn"
-            type="submit"
-            disabled={!title.trim() || !body.trim()}
-          >
+          <button type="submit" disabled={!title.trim() || !body.trim()}>
             Save
           </button>
-          <button
-            className="Post-cancel-btn"
-            type="button"
-            onClick={() => setEditing(false)}
-          >
+          <button type="button" onClick={() => setEditing(false)}>
             Cancel
           </button>
-          {error && <div className="Post-error">{error}</div>}
+          {error && <div>{error}</div>}
         </form>
       ) : (
         <>
-          <h3 className="Post-title">{post.title}</h3>
-          <p className="Post-body">{post.body}</p>
-          {user && (
-            <button className="Post-edit-btn" onClick={() => setEditing(true)}>
-              Edit
-            </button>
-          )}
-          {user && (
-            <button className="Post-delete-btn" onClick={handleDelete}>
-              Delete
-            </button>
-          )}
-          {error && <div className="Post-error">{error}</div>}
+          <h3>{post.title}</h3>
+          <p>{post.body}</p>
+          {user && <button onClick={() => setEditing(true)}>Edit</button>}
+          {user && <button onClick={handleDelete}>Delete</button>}
+          {error && <div>{error}</div>}
         </>
       )}
     </article>
