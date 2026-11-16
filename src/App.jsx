@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { auth, logOut } from "./firebase";
 import Login from "./Login";
 import Editor from "./Editor";
@@ -13,9 +13,8 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  function showToast(msg) {
-    setToast(msg);
-  }
+  const showToast = useCallback((msg) => setToast(msg), []);
+  const clearToast = useCallback(() => setToast(""), []);
 
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => setUser(u));
@@ -33,7 +32,7 @@ function App() {
 
   return (
     <div>
-      <Toast message={toast} onClose={() => setToast("")} />
+      <Toast message={toast} onClose={clearToast} />
       <header>
         <h1>Startle Dreams</h1>
         <div>

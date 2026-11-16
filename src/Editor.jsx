@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createPost } from "./firebase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Timestamp } from "firebase/firestore";
 
 export default function Editor({ user, showToast }) {
   const [title, setTitle] = useState("");
@@ -12,22 +11,21 @@ export default function Editor({ user, showToast }) {
 
   async function submit(e) {
     e.preventDefault();
-    setStatus("posting…");
     if (!title.trim() || !body.trim()) {
       showToast("Title and body cannot be empty.");
-      setStatus("");
       return;
     }
+    setStatus("posting…");
     try {
-      await createPost(title, body, user.uid, Timestamp.fromDate(postDate));
+      await createPost(title.trim(), body.trim(), user.uid, postDate);
       setTitle("");
       setBody("");
       setPostDate(new Date());
       setStatus("posted!");
       setTimeout(() => setStatus(""), 1500);
     } catch (err) {
+      setStatus("");
       showToast("Error: " + err.message);
-      if (showToast) showToast("Error: " + err.message);
     }
   }
 

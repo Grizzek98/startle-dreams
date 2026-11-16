@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { db } from "./firebase";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { updatePost, deletePost } from "./firebase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Post({ post, user }) {
   const [editing, setEditing] = useState(false);
-  const [title, setTitle] = useState(post.title);
-  const [body, setBody] = useState(post.body);
-  const [postDate, setPostDate] = useState(
-    post.postDate?.toDate ? post.postDate.toDate() : new Date()
-  );
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [postDate, setPostDate] = useState(new Date());
   const [error, setError] = useState("");
+
+  // Load the latest saved values each time editing starts, so cancel discards changes.
+  function startEditing() {
+    setTitle(post.title);
+    setBody(post.body);
+    setPostDate(post.postDate?.toDate ? post.postDate.toDate() : new Date());
+    setError("");
+    setEditing(true);
+  }
 
   async function handleEdit(e) {
     e.preventDefault();
@@ -22,12 +27,7 @@ export default function Post({ post, user }) {
       return;
     }
     try {
-      const postRef = doc(db, "posts", post.id);
-      await updateDoc(postRef, {
-        title,
-        body,
-        postDate: Timestamp.fromDate(postDate),
-      });
+      await updatePost(post.id, title.trim(), body.trim(), postDate);
       setEditing(false);
     } catch (err) {
       setError(err.message);
@@ -37,8 +37,7 @@ export default function Post({ post, user }) {
   async function handleDelete() {
     if (!window.confirm("Delete this post?")) return;
     try {
-      const postRef = doc(db, "posts", post.id);
-      await deleteDoc(postRef);
+      await deletePost(post.id);
     } catch (err) {
       setError(err.message);
     }
@@ -70,7 +69,7 @@ export default function Post({ post, user }) {
         <>
           <h3>{post.title}</h3>
           <p>{post.body}</p>
-          {user && <button onClick={() => setEditing(true)}>Edit</button>}
+          {user && <button onClick={startEditing}>Edit</button>}
           {user && <button onClick={handleDelete}>Delete</button>}
           {error && <div>{error}</div>}
         </>

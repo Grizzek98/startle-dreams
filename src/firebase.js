@@ -3,14 +3,16 @@ import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import {
   getFirestore,
   collection,
+  doc,
   addDoc,
+  updateDoc,
+  deleteDoc,
   query,
   orderBy,
-  onSnapshot,
-  serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase web config is public by design; access is enforced by Firestore security rules.
 const firebaseConfig = {
   apiKey: "AIzaSyCNWpyLCRh--reONt1QP1G4jDpXu5ZytBQ",
   authDomain: "startle-dreams.firebaseapp.com",
@@ -29,14 +31,21 @@ export const signIn = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
 export const logOut = () => signOut(auth);
 
-export const postsCollection = () => collection(db, "posts");
+const postsCollection = () => collection(db, "posts");
+const postRef = (id) => doc(db, "posts", id);
 
-export const createPost = (title, body, uid, postDate) =>
+export const postsQuery = () =>
+  query(postsCollection(), orderBy("postDate", "desc"));
+
+export const createPost = (title, body, uid, date) =>
   addDoc(postsCollection(), {
     title,
     body,
     authorUid: uid,
-    postDate: postDate,
+    postDate: Timestamp.fromDate(date),
   });
-export const postsQuery = () =>
-  query(postsCollection(), orderBy("postDate", "desc"));
+
+export const updatePost = (id, title, body, date) =>
+  updateDoc(postRef(id), { title, body, postDate: Timestamp.fromDate(date) });
+
+export const deletePost = (id) => deleteDoc(postRef(id));

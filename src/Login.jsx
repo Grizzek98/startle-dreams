@@ -8,7 +8,7 @@ export default function Login() {
 
   async function handle(e) {
     e.preventDefault();
-    setErr(null);
+    setErr("");
     try {
       await signIn(email, pw);
     } catch (e) {
@@ -21,6 +21,8 @@ export default function Login() {
       <h3>Admin login</h3>
       <div>
         <input
+          type="email"
+          autoComplete="username"
           placeholder="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -32,6 +34,7 @@ export default function Login() {
           value={pw}
           onChange={(e) => setPw(e.target.value)}
           type="password"
+          autoComplete="current-password"
         />
       </div>
       <button type="submit">login</button>
