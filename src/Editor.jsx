@@ -4,21 +4,19 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Editor({ user, showToast }) {
-  const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [status, setStatus] = useState("");
   const [postDate, setPostDate] = useState(new Date());
 
   async function submit(e) {
     e.preventDefault();
-    if (!title.trim() || !body.trim()) {
-      showToast("Title and body cannot be empty.");
+    if (!body.trim()) {
+      showToast("Write something first.");
       return;
     }
     setStatus("posting…");
     try {
-      await createPost(title.trim(), body.trim(), user.uid, postDate);
-      setTitle("");
+      await createPost(body.trim(), user.uid, postDate);
       setBody("");
       setPostDate(new Date());
       setStatus("posted!");
@@ -32,13 +30,6 @@ export default function Editor({ user, showToast }) {
   return (
     <form className="card editor" onSubmit={submit}>
       <h2>New dream</h2>
-      <input
-        className="title-input"
-        placeholder="Title"
-        aria-label="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
       <textarea
         placeholder="I dreamt…"
         aria-label="Dream"

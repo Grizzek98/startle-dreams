@@ -20,10 +20,7 @@ export default function PostList({ user }) {
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!posts || !q) return posts;
-    return posts.filter(
-      (p) =>
-        p.title?.toLowerCase().includes(q) || p.body?.toLowerCase().includes(q)
-    );
+    return posts.filter((p) => p.body?.toLowerCase().includes(q));
   }, [posts, search]);
 
   return (

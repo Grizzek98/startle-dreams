@@ -37,15 +37,14 @@ const postRef = (id) => doc(db, "posts", id);
 export const postsQuery = () =>
   query(postsCollection(), orderBy("postDate", "desc"));
 
-export const createPost = (title, body, uid, date) =>
+export const createPost = (body, uid, date) =>
   addDoc(postsCollection(), {
-    title,
     body,
     authorUid: uid,
     postDate: Timestamp.fromDate(date),
   });
 
-export const updatePost = (id, title, body, date) =>
-  updateDoc(postRef(id), { title, body, postDate: Timestamp.fromDate(date) });
+export const updatePost = (id, body, date) =>
+  updateDoc(postRef(id), { body, postDate: Timestamp.fromDate(date) });
 
 export const deletePost = (id) => deleteDoc(postRef(id));
