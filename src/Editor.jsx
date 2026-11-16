@@ -30,29 +30,39 @@ export default function Editor({ user, showToast }) {
   }
 
   return (
-    <form onSubmit={submit}>
-      <h3>New post</h3>
+    <form className="card editor" onSubmit={submit}>
+      <h2>New dream</h2>
       <input
+        className="title-input"
         placeholder="Title"
+        aria-label="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
       <textarea
-        placeholder="I dreamt..."
+        placeholder="I dreamt…"
+        aria-label="Dream"
+        rows={6}
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ marginRight: 8 }}>Date:</label>
-        <DatePicker
-          selected={postDate}
-          onChange={(date) => setPostDate(date)}
-          dateFormat="yyyy-MM-dd"
-        />
-      </div>
-      <div>
-        <button type="submit">Publish</button>
-        <span>{status}</span>
+      <div className="form-row">
+        <label className="date-field">
+          <span>Dreamt on</span>
+          <DatePicker
+            selected={postDate}
+            onChange={(date) => date && setPostDate(date)}
+            dateFormat="yyyy-MM-dd"
+          />
+        </label>
+        <span className="status">{status}</span>
+        <button
+          className="btn-primary"
+          type="submit"
+          disabled={status === "posting…"}
+        >
+          Publish
+        </button>
       </div>
     </form>
   );

@@ -3,6 +3,17 @@ import { updatePost, deletePost } from "./firebase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+function formatDate(ts) {
+  const d = ts?.toDate?.();
+  if (!d) return "";
+  return d.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export default function Post({ post, user }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");
@@ -43,37 +54,68 @@ export default function Post({ post, user }) {
     }
   }
 
-  return (
-    <article>
-      {editing ? (
+  if (editing) {
+    return (
+      <article className="card post">
         <form onSubmit={handleEdit}>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} />
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} />
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ marginRight: 8 }}>Date:</label>
-            <DatePicker
-              selected={postDate}
-              onChange={(date) => setPostDate(date)}
-              dateFormat="yyyy-MM-dd"
-            />
+          <input
+            className="title-input"
+            aria-label="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <textarea
+            aria-label="Dream"
+            rows={8}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          />
+          <div className="form-row">
+            <label className="date-field">
+              <span>Dreamt on</span>
+              <DatePicker
+                selected={postDate}
+                onChange={(date) => date && setPostDate(date)}
+                dateFormat="yyyy-MM-dd"
+              />
+            </label>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setEditing(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={!title.trim() || !body.trim()}
+            >
+              Save
+            </button>
           </div>
-          <button type="submit" disabled={!title.trim() || !body.trim()}>
-            Save
-          </button>
-          <button type="button" onClick={() => setEditing(false)}>
-            Cancel
-          </button>
-          {error && <div>{error}</div>}
+          {error && <p className="error">{error}</p>}
         </form>
-      ) : (
-        <>
-          <h3>{post.title}</h3>
-          <p>{post.body}</p>
-          {user && <button onClick={startEditing}>Edit</button>}
-          {user && <button onClick={handleDelete}>Delete</button>}
-          {error && <div>{error}</div>}
-        </>
+      </article>
+    );
+  }
+
+  return (
+    <article className="card post">
+      <time className="post-date">{formatDate(post.postDate)}</time>
+      <h3 className="post-title">{post.title}</h3>
+      <p className="post-body">{post.body}</p>
+      {user && (
+        <div className="post-actions">
+          <button className="btn-ghost" onClick={startEditing}>
+            Edit
+          </button>
+          <button className="btn-ghost danger" onClick={handleDelete}>
+            Delete
+          </button>
+        </div>
       )}
+      {error && <p className="error">{error}</p>}
     </article>
   );
 }
