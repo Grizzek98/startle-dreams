@@ -1,1 +1,27 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/startle-dreams/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="/startle-dreams/logo192.png"/><link rel="manifest" href="/startle-dreams/manifest.json"/><title>React App</title><script defer="defer" src="/startle-dreams/static/js/main.d0cc0d84.js"></script><link href="/startle-dreams/static/css/main.d67642c7.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070d22" />
+    <meta name="description" content="Startle Dreams: a dream journal" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>" />
+    <link rel="manifest" href="/startle-dreams/manifest.json" />
+    <title>Startle Dreams</title>
+    <script>
+      // Apply saved/system theme before first paint to avoid a flash
+      try {
+        var t = localStorage.getItem("theme");
+        if (t !== "dark" && t !== "light")
+          t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/startle-dreams/assets/index-DkU4SpAS.js"></script>
+    <link rel="stylesheet" crossorigin href="/startle-dreams/assets/index-BKqJB0Cu.css">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
